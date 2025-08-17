@@ -2,12 +2,14 @@ package com.campus_recover.auth.Service;
 
 import com.campus_recover.auth.Model.Event;
 import com.campus_recover.auth.Model.User;
+import com.campus_recover.auth.Repository.BookingRepository;
 import com.campus_recover.auth.Repository.EventRepository;
 import com.campus_recover.auth.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -20,6 +22,9 @@ public class EventService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private BookingRepository bookingRepo;
 
     public ResponseEntity<?> createEvent(Event eventRequest, HttpSession session) {
         try {
@@ -99,6 +104,7 @@ public class EventService {
         return ResponseEntity.ok(saved);
     }
 
+    @Transactional
     public ResponseEntity<?> deleteEvent(String id, HttpSession session) {
         String userEmail = (String) session.getAttribute("userEmail");
         if (userEmail == null) {
@@ -116,8 +122,13 @@ public class EventService {
             return ResponseEntity.status(403).body("Forbidden: You can only delete your own event.");
         }
 
+        // ✅ First delete related bookings
+        // ✅ Delete all bookings linked to this event
+        long deletedBookings = bookingRepo.deleteAllByEvent(event);
+
+        // ✅ Then delete the event
         eventRepo.delete(event);
-        return ResponseEntity.ok("Event deleted successfully.");
+        return ResponseEntity.ok("Event deleted successfully." + deletedBookings + " related bookings removed.");
     }
 
     public List<Event> getEventsByOwnerEmail(String email) {
