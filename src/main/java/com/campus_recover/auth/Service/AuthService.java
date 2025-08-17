@@ -52,9 +52,6 @@ public class AuthService {
 
         User user = userOpt.get();
 
-//        if (!user.getPassword().equals(password)) {
-//            return Optional.empty();
-//        }
         // ✅ Check raw password against hashed one
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return Optional.empty();

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,8 +70,6 @@ public class EventService {
 
     public ResponseEntity<?> updateEvent(String id, Event updatedEvent, HttpSession session) {
         String userEmail = (String) session.getAttribute("userEmail");
-//        System.out.println(updatedEvent.getDescription());
-//        System.out.println(userEmail);
         if (userEmail == null) {
             return ResponseEntity.status(401).body("Unauthorized: Please log in.");
         }

@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +56,6 @@ public class BookingService {
     }
 
     public ResponseEntity<?> getMyBookings(String userEmail) {
-//        String userEmail = (String) session.getAttribute("userEmail");
-        System.out.println(userEmail);
         if (userEmail == null) {
             return ResponseEntity.status(401).body("Unauthorized: Please log in first.");
         }

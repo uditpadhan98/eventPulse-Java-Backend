@@ -36,7 +36,6 @@ public class EventController {
     @GetMapping("/my-events")
     public ResponseEntity<?> getEventsOfLoggedInUser(HttpSession session) {
         String userEmail = (String) session.getAttribute("userEmail");
-//        System.out.println("G"+userEmail);
 
         if (userEmail == null) {
             return ResponseEntity.status(401).body("Unauthorized: Please log in.");

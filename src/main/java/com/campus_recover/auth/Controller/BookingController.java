@@ -21,7 +21,6 @@ public class BookingController {
 
     @GetMapping("/my-bookings")
     public ResponseEntity<?> getMyBookings(@RequestHeader("X-User-Email") String userEmail) {
-//        System.out.println("Hello");
         return bookingService.getMyBookings(userEmail);
     }
 
