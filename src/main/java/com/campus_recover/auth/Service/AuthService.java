@@ -7,6 +7,7 @@ import com.campus_recover.auth.Repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Register new user
     public String register(User user) {
@@ -30,6 +34,10 @@ public class AuthService {
         }
 
         // Ideally: hash the password here before saving (e.g., using BCrypt)
+        // ✅ Hash the password
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         userRepository.save(user);
         return "User registered successfully!";
     }
@@ -44,7 +52,11 @@ public class AuthService {
 
         User user = userOpt.get();
 
-        if (!user.getPassword().equals(password)) {
+//        if (!user.getPassword().equals(password)) {
+//            return Optional.empty();
+//        }
+        // ✅ Check raw password against hashed one
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             return Optional.empty();
         }
 
